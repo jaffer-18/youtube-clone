@@ -8,7 +8,7 @@ import upload_icon from '../../assets/upload.png'
 import more_icon from '../../assets/more.png'
 import notification_icon from '../../assets/notification.png'
 import profile_icon from '../../assets/jack.png'
-import { Link } from 'react-router-dom'
+import { Link, Navigate } from 'react-router-dom'
 
 const Navbar = ({setSidebar}) => {
   return (
@@ -27,7 +27,7 @@ const Navbar = ({setSidebar}) => {
        </div>
 
        <div className="nav-right flex-div">
-        <button className='logout-button'>LOGOUT</button>
+        <button onClick={() => window.location.href = 'https://delightful-sunshine-112988.netlify.app/'} className='logout-button'>LOGOUT</button>
         <Link to="/Contact"><h6>CONTACT US</h6></Link>
         <img src={upload_icon} alt="" />
         <img src={more_icon} alt="" />
