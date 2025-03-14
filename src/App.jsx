@@ -3,7 +3,7 @@ import Navbar from './Components/Navbar/Navbar'
 import { Route, Routes } from 'react-router-dom'
 import Home from './Pages/Home/Home'
 import Video from './Pages/Video/Video'
-import Contactus from './Components/Navbar/contactus'
+import Contactus from './Components/Navbar/Contactus'
 
 const App = () => {
 
