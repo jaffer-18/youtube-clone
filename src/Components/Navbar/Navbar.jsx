@@ -1,5 +1,6 @@
 import React from 'react'
 import './Navbar.css'
+// import Contact from '../'
 import Image1 from '../../assets/menu.png'
 import logo from '../../assets/logo.png'
 import search_icon from '../../assets/search.png'
@@ -20,12 +21,14 @@ const Navbar = ({setSidebar}) => {
 
        <div className="nav-middle flex-div">
         <div className='search-box flex-div'>
-          <input type="text" placeholder="search"/>
+          <input type="text" placeholder="SEARCH"/>
           <img src={search_icon} alt=""/>
         </div>
        </div>
 
        <div className="nav-right flex-div">
+        <button className='logout-button'>LOGOUT</button>
+        <Link to="/Contact"><h6>CONTACT US</h6></Link>
         <img src={upload_icon} alt="" />
         <img src={more_icon} alt="" />
         <img src={notification_icon} alt="" />
