@@ -22,7 +22,10 @@ const Navbar = ({setSidebar}) => {
        <div className="nav-right flex-div">
         <button onClick={() => window.location.href = 'https://delightful-sunshine-112988.netlify.app/'} className='logout-button'>LOGOUT</button>
         <Link to="/Contact"><h6>CONTACT US</h6></Link>
-        <img src={upload_icon} alt="" />
+        <label htmlFor="file-upload">
+          <img src={upload_icon} alt="" style={{ cursor: 'pointer' }} />
+        </label>
+          <input id="file-upload" type="file" style={{ display: 'none' }} />
         <img src={more_icon} alt="" />
         <img src={notification_icon} alt="" />
         <img src={profile_icon} className='user-icon' alt="" />
