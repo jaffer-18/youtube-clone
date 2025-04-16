@@ -4,45 +4,70 @@ import './Notifime.css'
 const Notifime = () => {
   return (
     <div className="notifi-container">
-        <div className="section">
-            <h2 className="section-title">UNDER THE HOOD</h2>
-            <p className="content-text">
-                Vidtube is powered by modern web technologies to ensure a fast, responsive, and a user-friendly as the core is React.js enabling efficient Components-based developement. Additional tools and libraries like react-router-DOM and moment and firebase support API calls
-            </p>
-        </div>
-
-        <div className="section tech-stack">
-            <h2 className="section-title">TECH STACK BREAKDOWN</h2>
-            <div className="tech-item">
-                <p><strong>Front-end:</strong> React.js, JSX, CSS</p>
+        <h2 className="notification-header">Notifications</h2>
+        <div className="notification-content">
+            <div className="notification-item">
+                <p className="notification-title">New Subscriber</p>
+                <p className="notification-details">John just subscribed to your channel</p>
+                <p className="notification-time">2 minutes ago</p>
             </div>
-            <div className="tech-item">
-                <p><strong>State Management:</strong> useState, useEffect</p>
+
+            <div className="notification-item">
+                <p className="notification-title">Video Liked</p>
+                <p className="notification-details">Emily liked your video</p>
+                <p className="notification-time">5 minutes ago</p>
             </div>
-            <div className="tech-item">
-                <p><strong>Routing:</strong> react-router-dom allows user to route and navigate to one page to another without refreshing the browser</p>
+
+            <div className="notification-item">
+                <p className="notification-title">New Comment</p>
+                <p className="notification-details">Mike commented: "need more on react"</p>
+                <p className="notification-time">12 minutes ago</p>
+            </div>
+
+            <div className="notification-item">
+                <p className="notification-title">Video Milestone</p>
+                <p className="notification-details">Intro to GitHub got 1000 likes</p>
+                <p className="notification-time">30 minutes ago</p>
+            </div>
+
+            <div className="notification-item">
+                <p className="notification-title">New Reply</p>
+                <p className="notification-details">Anna replied: "which one should I learn react or next"</p>
+                <p className="notification-time">45 minutes ago</p>
+            </div>
+
+            <div className="notification-item">
+                <p className="notification-title">Mention</p>
+                <p className="notification-details">@techguru mentioned you in comment: "check this channel"</p>
+                <p className="notification-time">3 minutes ago</p>
+            </div>
+
+            <div className="notification-item">
+                <p className="notification-title">Achievement Unlocked</p>
+                <p className="notification-details">You unlocked the "The Rising Star" badge</p>
+                <p className="notification-time">1 day ago</p>
+            </div>
+
+            <div className="notification-item">
+                <p className="notification-title">Video Shared</p>
+                <p className="notification-details">Your video was shared by someone</p>
+                <p className="notification-time">4 hours ago</p>
+            </div>
+
+            <div className="notification-item">
+                <p className="notification-title">Story Liked</p>
+                <p className="notification-details">Daniel liked your story</p>
+                <p className="notification-time">Just now</p>
+            </div>
+
+            <div className="notification-item">
+                <p className="notification-title">Thumbnail Updated</p>
+                <p className="notification-details">Your thumbnail was updated</p>
+                <p className="notification-time">2 hours ago</p>
             </div>
         </div>
-
-        <div className="section">
-            <h2 className="section-title">MEET THE DEVELOPERS</h2>
-            <p className="content-text">
-                We as a team of three are very passionate in building famous website and interactive website
-            </p>
-        </div>
-
-        <div className="section">
-            <h2 className="section-title">WHY YOUTUBE-CLONE</h2>
-            <p className="content-text">
-                We have created youtube-clone called vid tube to understanding the real-world React apps. It was a learning journey for us that reflects our growth as a developer
-            </p>
-        </div>
-
-        <div className="section">
-            <h2 className="section-title">CHALLENGES WE FACED</h2>
-            <p className="content-text">
-                While building the vid tube the main challenge for us for integrating the API's. Each step taught us something new about React.js
-            </p>
-        </div>
+    </div>
+  )
+}
 
 export default Notifime

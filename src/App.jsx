@@ -6,6 +6,7 @@ import Video from './Pages/Video/Video'
 import Contactus from './Components/Navbar/Contactus'
 import More from './Components/Navbar/More'
 import Notifime from './Components/Navbar/Notifime'
+import UserInfo from './Components/Navbar/userinfo'
 
 const App = () => {
 
@@ -17,9 +18,10 @@ const App = () => {
       <Routes>
         <Route path='/' element={<Home sidebar={sidebar}/>}/>
         <Route path='/video/:categoryId/:videoId' element={<Video/>}/>
-        <Route path='/contact' element={<Contactus/>}> </Route>
-        <Route path='/More' element={<More/>}></Route>
-        <Route path='/Notifime' element={<Notifime/>}></Route>
+        <Route path='/contact' element={<Contactus/>}/>
+        <Route path='/More' element={<More/>}/>
+        <Route path='/Notifime' element={<Notifime/>}/>
+        <Route path='/userinfo' element={<UserInfo/>}/>
       </Routes>
     </div>
   )

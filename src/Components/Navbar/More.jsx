@@ -15,7 +15,7 @@ const More = () => {
       </p>
       
       <p className="more-features">
-        <strong>UPCOMING FEATURES:</strong> In the upcoming we would like to add watch history, parental controls, and uploading videos and also downloading them and also making shorts and also sharing video and subscribing to the channels and also creating a playlist.
+        <strong>UPCOMING FEATURES:</strong> In the upcoming we would like to add watch history, parental controls,uploading videos,downloading videos,making shorts,sharing video and subscribing to the channels and also creating a playlist.
       </p>
       <p className="more-abstract">
         <strong>IN THE PIPELINE:</strong> we are constantly working to bring new and exciting features to enhance our user interface and your experince and to improve video playing features there alot of pipelines.So stay tuned.

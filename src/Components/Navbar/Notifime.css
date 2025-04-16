@@ -1,57 +1,80 @@
 .notifi-container {
-    max-width: 900px;
+    max-width: 600px;
     margin: 40px auto;
-    padding: 30px;
-    background-color: #ffffff;
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
-    border-radius: 15px;
-}
-
-.section {
-    margin-bottom: 25px;
     padding: 20px;
-    background-color: #f8f9fa;
-    border-radius: 10px;
-    transition: transform 0.2s ease;
+    background-color: #ffffff;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    border-radius: 12px;
+    position: relative;
+    height: auto;
+    max-height: 80vh;
+    overflow-y: auto;
 }
 
-.section:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
-}
-
-.section-title {
+.notification-header {
     color: #ff0000;
-    font-size: 1rem;  /* Reduced from 1.2rem */
+    font-size: 1.2rem;
     font-weight: 600;
-    margin-bottom: 15px;
+    margin-bottom: 20px;
+    padding-bottom: 10px;
     border-bottom: 2px solid #ff0000;
-    padding-bottom: 8px;
+    position: sticky;
+    top: 0;
+    background-color: white;
+    z-index: 1;
+    padding: 10px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    text-align: center;
 }
 
-.tech-stack {
-    background-color: #fff;
-    padding: 15px;
-    border-radius: 8px;
-    border-left: 4px solid #4285f4;
+.notification-content {
+    margin-top: 20px;
 }
 
-.tech-item {
-    margin: 10px 0;
-    padding: 8px;
+.notification-item {
+    margin: 15px 0;
+    padding: 12px;
     background-color: #f8f9fa;
-    border-radius: 6px;
+    border-radius: 8px;
+    transition: all 0.3s ease;
 }
 
-.content-text {
-    line-height: 1.6;
-    color: #444;
-    font-size: 14px;  /* Reduced from 16px */
+.notification-item:hover {
+    background-color: #fff;
+    transform: translateX(5px);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.notification-title {
+    color: #333;
+    font-weight: 600;
+    font-size: 0.95rem;
+    margin-bottom: 5px;
+}
+
+.notification-details {
+    color: #666;
+    font-size: 0.85rem;
+    margin-left: 15px;
+    padding-left: 10px;
+    border-left: 2px solid #ff0000;
+}
+
+.notification-time {
+    color: #888;
+    font-size: 0.8rem;
+    margin-top: 3px;
+    font-style: italic;
 }
 
 @media (max-width: 768px) {
     .notifi-container {
-        margin: 20px;
-        padding: 20px;
+        margin: 20px 0 20px 10px;
+        padding: 15px;
+        max-width: 300px;
+    }
+    
+    .notification-item {
+        padding: 10px;
     }
 }
