@@ -11,12 +11,16 @@ import profile_icon from '../../assets/jack.png'
 import { Link, useNavigate } from 'react-router-dom'
 import Contact from './Contactus'
 import More from './More'
+import Notifime from './Notifime'
 
 const Navbar = ({setSidebar}) => {
   const navigate = useNavigate();
 
   const handleMore = ()=>{
     navigate('/More');
+  }
+  const handleNotify=()=>{
+    navigate('/Notifime')
   }
   return (
     <nav className='flex-div'>
@@ -34,7 +38,7 @@ const Navbar = ({setSidebar}) => {
           <input id="file-upload" type="file" style={{ display: 'none' }} />
 
           <img onClick={handleMore} src={more_icon} alt="" />
-        <img src={notification_icon} alt="" />
+        <img onClick={handleNotify} src={notification_icon} alt="" />
         <img src={profile_icon} className='user-icon' alt="" />
        </div>
     </nav>
