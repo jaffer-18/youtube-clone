@@ -19,14 +19,11 @@ const Navbar = ({setSidebar}) => {
         <Link to="/"><img className='logo' src={logo} alt=""/></Link>
        </div>
 
-
-    
-
        <div className="nav-right flex-div">
         <button onClick={() => window.location.href = 'https://delightful-sunshine-112988.netlify.app/'} className='logout-button'>LOGOUT</button>
-        <button onClick={Contact} className='contact-button'>CONTACT US</button>
+        <Link to="/Contact"><h6>CONTACT US</h6></Link>
         <img src={upload_icon} alt="" />
-        <img  src={more_icon} alt="" />
+        <img src={more_icon} alt="" />
         <img src={notification_icon} alt="" />
         <img src={profile_icon} className='user-icon' alt="" />
        </div>
