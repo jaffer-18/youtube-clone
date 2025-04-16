@@ -45,14 +45,4 @@ const Notifime = () => {
             </p>
         </div>
 
-        <div className="section">
-            <h2 className="section-title">CREDITS AND RESOURCES</h2>
-            <p className="content-text">
-                We are using youtube data API, React.js documentation, and free UI from bootstrap and tailwind websites and Github to publish and also vercel to deployment process
-            </p>
-        </div>
-    </div>
-  )
-}
-
 export default Notifime
