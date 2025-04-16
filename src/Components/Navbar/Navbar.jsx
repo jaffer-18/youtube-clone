@@ -9,6 +9,7 @@ import more_icon from '../../assets/more.png'
 import notification_icon from '../../assets/notification.png'
 import profile_icon from '../../assets/jack.png'
 import { Link, Navigate } from 'react-router-dom'
+import Contact from './Contactus'
 
 const Navbar = ({setSidebar}) => {
   return (
@@ -19,18 +20,13 @@ const Navbar = ({setSidebar}) => {
        </div>
 
 
-       <div className="nav-middle flex-div">
-        <div className='search-box flex-div'>
-          <input type="text" placeholder="SEARCH"/>
-          <img src={search_icon} alt=""/>
-        </div>
-       </div>
+    
 
        <div className="nav-right flex-div">
         <button onClick={() => window.location.href = 'https://delightful-sunshine-112988.netlify.app/'} className='logout-button'>LOGOUT</button>
-        <Link to="/Contact"><h6>CONTACT US</h6></Link>
+        <button onClick={Contact} className='contact-button'>CONTACT US</button>
         <img src={upload_icon} alt="" />
-        <img src={more_icon} alt="" />
+        <img  src={more_icon} alt="" />
         <img src={notification_icon} alt="" />
         <img src={profile_icon} className='user-icon' alt="" />
        </div>
