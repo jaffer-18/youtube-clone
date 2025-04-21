@@ -9,7 +9,7 @@ const Upload = () => {
             <p>upload your file here</p>
             <div className='upload-form'>
                 <form action="">
-                    <input type="file" className="uploading" id="upload-fea" />
+                    <input type="file" className="uploading" id="upload-fea"/>
                     <button className="upload_btn" type="submit">Upload</button>
                     <button className="remove_btn" type="button">Delete</button>           
                 </form>
