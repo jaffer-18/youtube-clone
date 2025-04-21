@@ -9,9 +9,9 @@ const Upload = () => {
             <p>upload your file here</p>
             <div className='upload-form'>
                 <form action="">
-                    <input type="file" className="upload-fea" id="upload-fea" />
-                    <button className="upload_btn" type="submit">upload</button>
-                    <button className="remove_btn" type="button">delete</button>           
+                    <input type="file" className="uploading" id="upload-fea" />
+                    <button className="upload_btn" type="submit">Upload</button>
+                    <button className="remove_btn" type="button">Delete</button>           
                 </form>
             </div>
         </div>
