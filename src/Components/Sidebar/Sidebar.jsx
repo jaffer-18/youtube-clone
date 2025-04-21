@@ -14,6 +14,7 @@ import Simon from '../../assets/simon.png'
 import Tom from '../../assets/tom.png'
 import Megan from '../../assets/megan.png'
 import Cameron from '../../assets/cameron.png'
+import upload_icon from '../../assets/upload.png'
 
 
 const Sidebar = ({sidebar,category,setCategory}) => {
@@ -47,6 +48,9 @@ const Sidebar = ({sidebar,category,setCategory}) => {
             </div>
             <div className={`side-link ${category==25?"active":""}`} onClick={()=>setCategory(25)}>
                 <img src={News} alt=""/><p>News</p>
+            </div>
+            <div className="side-link">
+                <img src={upload_icon} alt=""/><p>Upload</p>
             </div>
             <hr/>
         </div>
