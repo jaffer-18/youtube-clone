@@ -104,15 +104,12 @@ const UploadModal = ({ toggleModal }) => {
       <div className="overlay" onClick={toggleModal}>
         <div className="modal-content" onClick={(e) => e.stopPropagation()}>
           <h2>UPLOAD</h2>
+          <input type="file"/>
+          <input type="text" placeholder="Enter a caption..." />
           <p>
-            <input type="file"/>
-            Lorem ipsum dolor sit amet consectetur adipisicing elit. Recusandae, vitae,
-            itaque delectus tempora dolores velit perferendis obcaecati inventore aliquid
-            nesciunt voluptate ipsam, quia dicta magni dolor consequatur? Sapiente, ea nemo?
           </p>
-          <button className="close-modal" onClick={toggleModal}>
-            UPLOAD
-          </button>
+          <button className="close-modal" onClick={toggleModal}>CLOSE</button>
+          <button className="upload-button" onClick={toggleModal}>UPLOAD</button>
         </div>
       </div>
     </div>

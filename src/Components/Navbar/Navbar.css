@@ -112,4 +112,71 @@ nav{
     padding: 10px 20px;
     cursor: pointer;
   }
+
   
+/* Modal content container */
+.modal-content {
+    background: #fff;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    width: 90%;
+    max-width: 400px;
+    text-align: center;
+  }
+  
+  /* Modal heading */
+  .modal-content h2 {
+    font-size: 24px;
+    color: #333;
+    margin-bottom: 20px;
+  }
+  
+  /* Input fields */
+  .modal-content input[type="file"],
+  .modal-content input[type="text"] {
+    display: block;
+    width: 100%;
+    margin: 10px 0;
+    padding: 10px;
+    font-size: 14px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    box-sizing: border-box;
+  }
+  
+  /* Paragraph styling */
+  .modal-content p {
+    font-size: 14px;
+    color: #555;
+    margin: 10px 0;
+  }
+  
+  /* Buttons */
+  .close-modal,
+  .upload-button {
+    padding: 10px 20px;
+    font-size: 14px;
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    margin: 10px 5px;
+    transition: background-color 0.3s ease;
+  }
+  
+  .close-modal {
+    background-color: #dc3545;
+  }
+  
+  .close-modal:hover {
+    background-color: #b02a37;
+  }
+  
+  .upload-button {
+    background-color: #007bff;
+  }
+  
+  .upload-button:hover {
+    background-color: #0056b3;
+  }
