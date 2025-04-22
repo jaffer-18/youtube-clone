@@ -7,6 +7,7 @@ import Contactus from './Components/Navbar/Contactus'
 import More from './Components/Navbar/More'
 import Notifime from './Components/Navbar/Notifime'
 import UserInfo from './Components/Navbar/userinfo'
+import './Components/Navbar/Navbar.css'
 
 const App = () => {
 
