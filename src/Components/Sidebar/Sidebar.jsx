@@ -50,7 +50,7 @@ const Sidebar = ({sidebar,category,setCategory}) => {
                 <img src={News} alt=""/><p>News</p>
             </div>
             <div className="side-link">
-                <img src={upload_icon} alt=""/><p>Upload</p>
+                <img src={upload_icon} alt=""/><p>Uploaded videos</p>
             </div>
             <hr/>
         </div>
