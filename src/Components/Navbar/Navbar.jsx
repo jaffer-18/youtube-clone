@@ -863,8 +863,1996 @@
 // export default Navbar;
 
 
+// import React, { useState } from 'react';
+// import { BrowserRouter as Router, Routes, Route, Link, useNavigate } from 'react-router-dom';
+// import './Navbar.css';
+// import Image1 from '../../assets/menu.png';
+// import logo from '../../assets/logo.png';
+// import upload_icon from '../../assets/upload.png';
+// import more_icon from '../../assets/more.png';
+// import notification_icon from '../../assets/notification.png';
+// import profile_icon from '../../assets/jack.png';
+
+// // Import Firebase app and auth from your Firebase config file
+// import app from '../../firebase'; // Adjust path as needed
+// import { auth } from '../../firebase'; // Adjust path as needed
+
+// // Import Firebase components
+// import { getStorage, ref, uploadBytesResumable, getDownloadURL } from "firebase/storage";
+// import { getFirestore, collection, addDoc, serverTimestamp } from "firebase/firestore";
+
+// // Style objects for inline styling
+// const styles = {
+//   modal: {
+//     position: 'fixed',
+//     top: 0,
+//     left: 0,
+//     width: '100%',
+//     height: '100%',
+//     zIndex: 1000
+//   },
+//   overlay: {
+//     position: 'fixed',
+//     top: 0,
+//     left: 0,
+//     width: '100%',
+//     height: '100%',
+//     backgroundColor: 'rgba(0, 0, 0, 0.7)',
+//     display: 'flex',
+//     justifyContent: 'center',
+//     alignItems: 'center',
+//     zIndex: 1000
+//   },
+//   modalContent: {
+//     backgroundColor: '#fff',
+//     padding: '20px',
+//     borderRadius: '8px',
+//     maxWidth: '500px',
+//     width: '90%',
+//     maxHeight: '80vh',
+//     overflowY: 'auto',
+//     zIndex: 1001
+//   },
+//   videoPreview: {
+//     margin: '10px 0',
+//     border: '1px solid #ddd',
+//     borderRadius: '4px',
+//     overflow: 'hidden'
+//   },
+//   progressBar: {
+//     width: '100%',
+//     height: '20px',
+//     backgroundColor: '#e0e0e0',
+//     borderRadius: '4px',
+//     margin: '10px 0',
+//     position: 'relative'
+//   },
+//   progress: (percentage) => ({
+//     height: '100%',
+//     backgroundColor: '#4285f4',
+//     borderRadius: '4px',
+//     transition: 'width 0.3s ease',
+//     width: `${percentage}%`
+//   }),
+//   progressText: {
+//     position: 'absolute',
+//     top: '50%',
+//     left: '50%',
+//     transform: 'translate(-50%, -50%)',
+//     color: '#000',
+//     fontSize: '12px',
+//     fontWeight: 'bold'
+//   },
+//   errorMessage: {
+//     color: '#d32f2f',
+//     margin: '10px 0'
+//   },
+//   modalButtons: {
+//     display: 'flex',
+//     justifyContent: 'space-between',
+//     marginTop: '15px'
+//   },
+//   fileInput: {
+//     width: '100%',
+//     padding: '10px 0',
+//     marginBottom: '10px'
+//   },
+//   captionInput: {
+//     width: '100%',
+//     padding: '10px',
+//     margin: '10px 0',
+//     borderRadius: '4px',
+//     border: '1px solid #ddd'
+//   },
+//   button: {
+//     padding: '10px 20px',
+//     borderRadius: '4px',
+//     cursor: 'pointer',
+//     border: 'none',
+//     fontWeight: 'bold'
+//   },
+//   closeButton: {
+//     backgroundColor: '#f44336',
+//     color: 'white'
+//   },
+//   uploadButton: {
+//     backgroundColor: '#4CAF50',
+//     color: 'white'
+//   },
+//   disabledButton: {
+//     opacity: 0.6,
+//     cursor: 'not-allowed'
+//   }
+// };
+
+// // Initialize Firebase services
+// const storage = getStorage(app);
+// const db = getFirestore(app);
+
+// // Upload Modal Component
+// const UploadModal = ({ toggleModal }) => {
+//   const [videoFile, setVideoFile] = useState(null);
+//   const [videoBase64, setVideoBase64] = useState('');
+//   const [caption, setCaption] = useState('');
+//   const [uploadProgress, setUploadProgress] = useState(0);
+//   const [isUploading, setIsUploading] = useState(false);
+//   const [error, setError] = useState('');
+
+//   const handleFileChange = (e) => {
+//     const file = e.target.files[0];
+//     if (file && file.type.includes('video')) {
+//       setVideoFile(file);
+//       const reader = new FileReader();
+//       reader.onload = (event) => {
+//         setVideoBase64(event.target.result);
+//       };
+//       reader.readAsDataURL(file);
+//     } else if (file) {
+//       setError('Please select a valid video file');
+//     }
+//   };
+
+//   const handleUpload = async () => {
+//     if (!videoFile) {
+//       setError('Please select a video to upload');
+//       return;
+//     }
+    
+//     if (!caption.trim()) {
+//       setError('Please enter a caption');
+//       return;
+//     }
+
+//     // Check if user is logged in
+//     if (!auth.currentUser) {
+//       setError('You must be logged in to upload videos');
+//       return;
+//     }
+
+//     setIsUploading(true);
+//     setError('');
+    
+//     try {
+//       // Create a unique filename using timestamp and original filename
+//       const timestamp = new Date().getTime();
+//       const fileName = `videos/${auth.currentUser.uid}/${timestamp}-${videoFile.name}`;
+      
+//       // Create storage reference
+//       const storageRef = ref(storage, fileName);
+      
+//       // Upload the video file
+//       const uploadTask = uploadBytesResumable(storageRef, videoFile);
+      
+//       // Listen for upload progress
+//       uploadTask.on('state_changed', 
+//         (snapshot) => {
+//           // Calculate and update progress
+//           const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+//           setUploadProgress(progress);
+//         },
+//         (error) => {
+//           // Handle upload errors
+//           setError('Upload failed: ' + error.message);
+//           setIsUploading(false);
+//         },
+//         async () => {
+//           // Handle successful upload
+//           const downloadURL = await getDownloadURL(uploadTask.snapshot.ref);
+          
+//           // Add the video info to Firestore database
+//           await addDoc(collection(db, "videos"), {
+//             userId: auth.currentUser.uid,
+//             userName: auth.currentUser.displayName || 'Anonymous',
+//             caption: caption,
+//             videoUrl: downloadURL,
+//             fileName: fileName,
+//             timestamp: serverTimestamp(),
+//             likes: 0,
+//             comments: []
+//           });
+          
+//           // Reset form and close modal
+//           setVideoFile(null);
+//           setVideoBase64('');
+//           setCaption('');
+//           setUploadProgress(0);
+//           setIsUploading(false);
+//           toggleModal();
+//         }
+//       );
+//     } catch (error) {
+//       setError('Upload failed: ' + error.message);
+//       setIsUploading(false);
+//     }
+//   };
+
+//   // Stop propagation on modal content click to prevent closing when clicking inside
+//   const handleModalContentClick = (e) => {
+//     e.stopPropagation();
+//   };
+
+//   return (
+//     <div style={styles.modal}>
+//       <div style={styles.overlay} onClick={toggleModal}>
+//         <div style={styles.modalContent} onClick={handleModalContentClick}>
+//           <h2>UPLOAD</h2>
+//           <input 
+//             type="file" 
+//             accept="video/*" 
+//             onChange={handleFileChange} 
+//             style={styles.fileInput}
+//           />
+//           <input 
+//             type="text" 
+//             placeholder="Enter a caption..." 
+//             value={caption}
+//             onChange={(e) => setCaption(e.target.value)}
+//             style={styles.captionInput}
+//           />
+          
+//           {videoBase64 && (
+//             <div style={styles.videoPreview}>
+//               <video controls width="100%" height="auto">
+//                 <source src={videoBase64} type={videoFile?.type} />
+//                 Your browser does not support the video tag.
+//               </video>
+//             </div>
+//           )}
+          
+//           {isUploading && (
+//             <div style={styles.progressBar}>
+//               <div style={styles.progress(uploadProgress)}></div>
+//               <span style={styles.progressText}>{Math.round(uploadProgress)}%</span>
+//             </div>
+//           )}
+          
+//           {error && <p style={styles.errorMessage}>{error}</p>}
+          
+//           <div style={styles.modalButtons}>
+//             <button 
+//               style={{
+//                 ...styles.button,
+//                 ...styles.closeButton,
+//                 ...(isUploading ? styles.disabledButton : {})
+//               }}
+//               onClick={toggleModal}
+//               disabled={isUploading}
+//             >
+//               CLOSE
+//             </button>
+//             <button 
+//               style={{
+//                 ...styles.button,
+//                 ...styles.uploadButton,
+//                 ...(isUploading ? styles.disabledButton : {})
+//               }}
+//               onClick={handleUpload}
+//               disabled={isUploading}
+//             >
+//               {isUploading ? 'UPLOADING...' : 'UPLOAD'}
+//             </button>
+//           </div>
+//         </div>
+//       </div>
+//     </div>
+//   );
+// };
+
+// // Navbar Component
+// const Navbar = ({ setSidebar }) => {
+//   const navigate = useNavigate();
+//   const [modal, setModal] = useState(false);
+
+//   const toggleModal = () => {
+//     setModal((prev) => !prev);
+//   };
+
+//   return (
+//     <>
+//       <nav className='flex-div'>
+//         <div className='nav-left flex-div'>
+//           <img
+//             className='menu-icon'
+//             onClick={() => setSidebar((prev) => !prev)}
+//             src={Image1}
+//             alt="menu"
+//           />
+//           <Link to="/">
+//             <img className='logo' src={logo} alt="logo" />
+//           </Link>
+//         </div>
+
+//         <div className="nav-right flex-div">
+//           <button
+//             onClick={() =>
+//               (window.location.href = 'https://delightful-sunshine-112988.netlify.app/')
+//             }
+//             className='logout-button'
+//           >
+//             LOGOUT
+//           </button>
+//           <Link to="/Contact">
+//             <h6>CONTACT ME</h6>
+//           </Link>
+//           <img
+//             src={upload_icon}
+//             alt="upload"
+//             style={{ cursor: 'pointer' }}
+//             onClick={toggleModal}
+//           />
+//           <img onClick={() => navigate('/More')} src={more_icon} alt="more" />
+//           <img onClick={() => navigate('/Notifime')} src={notification_icon} alt="notifications" />
+//           <img
+//             onClick={() => navigate('/userinfo')}
+//             src={profile_icon}
+//             className='user-icon'
+//             alt="profile"
+//           />
+//         </div>
+//       </nav>
+
+//       {modal && <UploadModal toggleModal={toggleModal} />}
+//     </>
+//   );
+// };
+
+// export default Navbar;
+
+
+// import React, { useState, useEffect } from 'react';
+// import { BrowserRouter as Router, Routes, Route, Link, useNavigate } from 'react-router-dom';
+// import './Navbar.css';
+// import Image1 from '../../assets/menu.png';
+// import logo from '../../assets/logo.png';
+// import upload_icon from '../../assets/upload.png';
+// import more_icon from '../../assets/more.png';
+// import notification_icon from '../../assets/notification.png';
+// import profile_icon from '../../assets/jack.png';
+
+// // Import Firebase app and auth from your Firebase config file
+// import app from '../../firebase'; // Adjust path as needed
+// import { auth } from '../../firebase'; // Remove signInAnonymously import
+// import { onAuthStateChanged, signInAnonymously } from 'firebase/auth'; // Import directly from firebase/auth
+
+// // Import Firebase components
+// import { getStorage, ref, uploadBytesResumable, getDownloadURL } from "firebase/storage";
+// import { getFirestore, collection, addDoc, serverTimestamp } from "firebase/firestore";
+
+// // Style objects for inline styling
+// const styles = {
+//   modal: {
+//     position: 'fixed',
+//     top: 0,
+//     left: 0,
+//     width: '100%',
+//     height: '100%',
+//     zIndex: 1000
+//   },
+//   overlay: {
+//     position: 'fixed',
+//     top: 0,
+//     left: 0,
+//     width: '100%',
+//     height: '100%',
+//     backgroundColor: 'rgba(0, 0, 0, 0.7)',
+//     display: 'flex',
+//     justifyContent: 'center',
+//     alignItems: 'center',
+//     zIndex: 1000
+//   },
+//   modalContent: {
+//     backgroundColor: '#fff',
+//     padding: '20px',
+//     borderRadius: '8px',
+//     maxWidth: '500px',
+//     width: '90%',
+//     maxHeight: '80vh',
+//     overflowY: 'auto',
+//     zIndex: 1001
+//   },
+//   videoPreview: {
+//     margin: '10px 0',
+//     border: '1px solid #ddd',
+//     borderRadius: '4px',
+//     overflow: 'hidden'
+//   },
+//   progressBar: {
+//     width: '100%',
+//     height: '20px',
+//     backgroundColor: '#e0e0e0',
+//     borderRadius: '4px',
+//     margin: '10px 0',
+//     position: 'relative'
+//   },
+//   progress: (percentage) => ({
+//     height: '100%',
+//     backgroundColor: '#4285f4',
+//     borderRadius: '4px',
+//     transition: 'width 0.3s ease',
+//     width: `${percentage}%`
+//   }),
+//   progressText: {
+//     position: 'absolute',
+//     top: '50%',
+//     left: '50%',
+//     transform: 'translate(-50%, -50%)',
+//     color: '#000',
+//     fontSize: '12px',
+//     fontWeight: 'bold'
+//   },
+//   errorMessage: {
+//     color: '#d32f2f',
+//     margin: '10px 0'
+//   },
+//   successMessage: {
+//     color: '#4CAF50',
+//     margin: '10px 0'
+//   },
+//   modalButtons: {
+//     display: 'flex',
+//     justifyContent: 'space-between',
+//     marginTop: '15px'
+//   },
+//   fileInput: {
+//     width: '100%',
+//     padding: '10px 0',
+//     marginBottom: '10px'
+//   },
+//   captionInput: {
+//     width: '100%',
+//     padding: '10px',
+//     margin: '10px 0',
+//     borderRadius: '4px',
+//     border: '1px solid #ddd'
+//   },
+//   button: {
+//     padding: '10px 20px',
+//     borderRadius: '4px',
+//     cursor: 'pointer',
+//     border: 'none',
+//     fontWeight: 'bold'
+//   },
+//   closeButton: {
+//     backgroundColor: '#f44336',
+//     color: 'white'
+//   },
+//   uploadButton: {
+//     backgroundColor: '#4CAF50',
+//     color: 'white'
+//   },
+//   loginButton: {
+//     backgroundColor: '#2196F3',
+//     color: 'white',
+//     margin: '10px 0',
+//     width: '100%'
+//   },
+//   disabledButton: {
+//     opacity: 0.6,
+//     cursor: 'not-allowed'
+//   }
+// };
+
+// // Initialize Firebase services
+// const storage = getStorage(app);
+// const db = getFirestore(app);
+
+// // Upload Modal Component
+// const UploadModal = ({ toggleModal }) => {
+//   const [videoFile, setVideoFile] = useState(null);
+//   const [videoBase64, setVideoBase64] = useState('');
+//   const [caption, setCaption] = useState('');
+//   const [uploadProgress, setUploadProgress] = useState(0);
+//   const [isUploading, setIsUploading] = useState(false);
+//   const [error, setError] = useState('');
+//   const [success, setSuccess] = useState('');
+//   const [user, setUser] = useState(null);
+
+//   // Listen for auth state changes
+//   useEffect(() => {
+//     const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
+//       setUser(currentUser);
+//     });
+
+//     // Clean up subscription on unmount
+//     return () => unsubscribe();
+//   }, []);
+
+//   const handleFileChange = (e) => {
+//     const file = e.target.files[0];
+//     if (file && file.type.includes('video')) {
+//       setVideoFile(file);
+//       const reader = new FileReader();
+//       reader.onload = (event) => {
+//         setVideoBase64(event.target.result);
+//       };
+//       reader.readAsDataURL(file);
+//       setError('');
+//     } else if (file) {
+//       setError('Please select a valid video file');
+//     }
+//   };
+
+//   // Handle anonymous sign-in
+//   const handleSignIn = async () => {
+//     try {
+//       setError('');
+//       // Use signInAnonymously directly with auth
+//       await signInAnonymously(auth);
+//       setSuccess('Signed in successfully! You can now upload videos.');
+//     } catch (error) {
+//       setError('Sign in failed: ' + error.message);
+//     }
+//   };
+
+//   const handleUpload = async () => {
+//     if (!videoFile) {
+//       setError('Please select a video to upload');
+//       return;
+//     }
+    
+//     if (!caption.trim()) {
+//       setError('Please enter a caption');
+//       return;
+//     }
+
+//     // Check if user is logged in
+//     if (!user) {
+//       setError('You must be logged in to upload videos. Please sign in first.');
+//       return;
+//     }
+
+//     setIsUploading(true);
+//     setError('');
+    
+//     try {
+//       // Create a unique filename using timestamp and original filename
+//       const timestamp = new Date().getTime();
+//       const fileName = `videos/${user.uid}/${timestamp}-${videoFile.name}`;
+      
+//       // Create storage reference
+//       const storageRef = ref(storage, fileName);
+      
+//       // Upload the video file
+//       const uploadTask = uploadBytesResumable(storageRef, videoFile);
+      
+//       // Listen for upload progress
+//       uploadTask.on('state_changed', 
+//         (snapshot) => {
+//           // Calculate and update progress
+//           const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+//           setUploadProgress(progress);
+//         },
+//         (error) => {
+//           // Handle upload errors
+//           setError('Upload failed: ' + error.message);
+//           setIsUploading(false);
+//         },
+//         async () => {
+//           // Handle successful upload
+//           const downloadURL = await getDownloadURL(uploadTask.snapshot.ref);
+          
+//           // Add the video info to Firestore database
+//           await addDoc(collection(db, "videos"), {
+//             userId: user.uid,
+//             userName: user.displayName || 'Anonymous',
+//             caption: caption,
+//             videoUrl: downloadURL,
+//             fileName: fileName,
+//             timestamp: serverTimestamp(),
+//             likes: 0,
+//             comments: []
+//           });
+          
+//           // Show success message
+//           setSuccess('Video uploaded successfully!');
+          
+//           // Reset form after a short delay to show success message
+//           setTimeout(() => {
+//             setVideoFile(null);
+//             setVideoBase64('');
+//             setCaption('');
+//             setUploadProgress(0);
+//             setIsUploading(false);
+//             setSuccess('');
+//             toggleModal();
+//           }, 2000);
+//         }
+//       );
+//     } catch (error) {
+//       setError('Upload failed: ' + error.message);
+//       setIsUploading(false);
+//     }
+//   };
+
+//   // Stop propagation on modal content click to prevent closing when clicking inside
+//   const handleModalContentClick = (e) => {
+//     e.stopPropagation();
+//   };
+
+//   return (
+//     <div style={styles.modal}>
+//       <div style={styles.overlay} onClick={toggleModal}>
+//         <div style={styles.modalContent} onClick={handleModalContentClick}>
+//           <h2>UPLOAD</h2>
+          
+//           {!user ? (
+//             <>
+//               <p>You need to be logged in to upload videos.</p>
+//               <button 
+//                 style={{...styles.button, ...styles.loginButton}}
+//                 onClick={handleSignIn}
+//               >
+//                 SIGN IN TO UPLOAD
+//               </button>
+//             </>
+//           ) : (
+//             <>
+//               <input 
+//                 type="file" 
+//                 accept="video/*" 
+//                 onChange={handleFileChange} 
+//                 style={styles.fileInput}
+//               />
+//               <input 
+//                 type="text" 
+//                 placeholder="Enter a caption..." 
+//                 value={caption}
+//                 onChange={(e) => setCaption(e.target.value)}
+//                 style={styles.captionInput}
+//               />
+              
+//               {videoBase64 && (
+//                 <div style={styles.videoPreview}>
+//                   <video controls width="100%" height="auto">
+//                     <source src={videoBase64} type={videoFile?.type} />
+//                     Your browser does not support the video tag.
+//                   </video>
+//                 </div>
+//               )}
+              
+//               {isUploading && (
+//                 <div style={styles.progressBar}>
+//                   <div style={styles.progress(uploadProgress)}></div>
+//                   <span style={styles.progressText}>{Math.round(uploadProgress)}%</span>
+//                 </div>
+//               )}
+//             </>
+//           )}
+          
+//           {error && <p style={styles.errorMessage}>{error}</p>}
+//           {success && <p style={styles.successMessage}>{success}</p>}
+          
+//           <div style={styles.modalButtons}>
+//             <button 
+//               style={{
+//                 ...styles.button,
+//                 ...styles.closeButton,
+//                 ...(isUploading ? styles.disabledButton : {})
+//               }}
+//               onClick={toggleModal}
+//               disabled={isUploading}
+//             >
+//               CLOSE
+//             </button>
+            
+//             {user && (
+//               <button 
+//                 style={{
+//                   ...styles.button,
+//                   ...styles.uploadButton,
+//                   ...(isUploading ? styles.disabledButton : {})
+//                 }}
+//                 onClick={handleUpload}
+//                 disabled={isUploading}
+//               >
+//                 {isUploading ? 'UPLOADING...' : 'UPLOAD'}
+//               </button>
+//             )}
+//           </div>
+//         </div>
+//       </div>
+//     </div>
+//   );
+// };
+
+// // Navbar Component
+// const Navbar = ({ setSidebar }) => {
+//   const navigate = useNavigate();
+//   const [modal, setModal] = useState(false);
+//   const [isLoggedIn, setIsLoggedIn] = useState(false);
+
+//   // Check authentication state when component mounts
+//   useEffect(() => {
+//     const unsubscribe = onAuthStateChanged(auth, (user) => {
+//       setIsLoggedIn(!!user);
+//     });
+    
+//     // Clean up subscription on unmount
+//     return () => unsubscribe();
+//   }, []);
+
+//   const toggleModal = () => {
+//     setModal((prev) => !prev);
+//   };
+
+//   return (
+//     <>
+//       <nav className='flex-div'>
+//         <div className='nav-left flex-div'>
+//           <img
+//             className='menu-icon'
+//             onClick={() => setSidebar((prev) => !prev)}
+//             src={Image1}
+//             alt="menu"
+//           />
+//           <Link to="/">
+//             <img className='logo' src={logo} alt="logo" />
+//           </Link>
+//         </div>
+
+//         <div className="nav-right flex-div">
+//           <button
+//             onClick={() =>
+//               (window.location.href = 'https://delightful-sunshine-112988.netlify.app/')
+//             }
+//             className='logout-button'
+//           >
+//             LOGOUT
+//           </button>
+//           <Link to="/Contact">
+//             <h6>CONTACT ME</h6>
+//           </Link>
+//           <img
+//             src={upload_icon}
+//             alt="upload"
+//             style={{ cursor: 'pointer' }}
+//             onClick={toggleModal}
+//           />
+//           <img onClick={() => navigate('/More')} src={more_icon} alt="more" />
+//           <img onClick={() => navigate('/Notifime')} src={notification_icon} alt="notifications" />
+//           <img
+//             onClick={() => navigate('/userinfo')}
+//             src={profile_icon}
+//             className='user-icon'
+//             alt="profile"
+//           />
+//         </div>
+//       </nav>
+
+//       {modal && <UploadModal toggleModal={toggleModal} />}
+//     </>
+//   );
+// };
+
+// export default Navbar;
+
+
+// import React, { useState } from 'react';
+// import { Link, useNavigate } from 'react-router-dom';
+// import './Navbar.css';
+// import Image1 from '../../assets/menu.png';
+// import logo from '../../assets/logo.png';
+// import upload_icon from '../../assets/upload.png';
+// import more_icon from '../../assets/more.png';
+// import notification_icon from '../../assets/notification.png';
+// import profile_icon from '../../assets/jack.png';
+
+// // Import Firebase services from your Firebase config file
+// import app from '../../firebase';
+// import { storage, db } from '../../firebase';
+// import { ref, uploadBytesResumable, getDownloadURL } from "firebase/storage";
+// import { collection, addDoc, serverTimestamp } from "firebase/firestore";
+
+// // Style objects for inline styling
+// const styles = {
+//   modal: {
+//     position: 'fixed',
+//     top: 0,
+//     left: 0,
+//     width: '100%',
+//     height: '100%',
+//     zIndex: 1000
+//   },
+//   overlay: {
+//     position: 'fixed',
+//     top: 0,
+//     left: 0,
+//     width: '100%',
+//     height: '100%',
+//     backgroundColor: 'rgba(0, 0, 0, 0.7)',
+//     display: 'flex',
+//     justifyContent: 'center',
+//     alignItems: 'center',
+//     zIndex: 1000
+//   },
+//   modalContent: {
+//     backgroundColor: '#fff',
+//     padding: '20px',
+//     borderRadius: '8px',
+//     maxWidth: '500px',
+//     width: '90%',
+//     maxHeight: '80vh',
+//     overflowY: 'auto',
+//     zIndex: 1001
+//   },
+//   videoPreview: {
+//     margin: '10px 0',
+//     border: '1px solid #ddd',
+//     borderRadius: '4px',
+//     overflow: 'hidden'
+//   },
+//   progressBar: {
+//     width: '100%',
+//     height: '20px',
+//     backgroundColor: '#e0e0e0',
+//     borderRadius: '4px',
+//     margin: '10px 0',
+//     position: 'relative'
+//   },
+//   progress: (percentage) => ({
+//     height: '100%',
+//     backgroundColor: '#4285f4',
+//     borderRadius: '4px',
+//     transition: 'width 0.3s ease',
+//     width: `${percentage}%`
+//   }),
+//   progressText: {
+//     position: 'absolute',
+//     top: '50%',
+//     left: '50%',
+//     transform: 'translate(-50%, -50%)',
+//     color: '#000',
+//     fontSize: '12px',
+//     fontWeight: 'bold'
+//   },
+//   errorMessage: {
+//     color: '#d32f2f',
+//     margin: '10px 0'
+//   },
+//   successMessage: {
+//     color: '#4CAF50',
+//     margin: '10px 0'
+//   },
+//   modalButtons: {
+//     display: 'flex',
+//     justifyContent: 'space-between',
+//     marginTop: '15px'
+//   },
+//   fileInput: {
+//     width: '100%',
+//     padding: '10px 0',
+//     marginBottom: '10px'
+//   },
+//   captionInput: {
+//     width: '100%',
+//     padding: '10px',
+//     margin: '10px 0',
+//     borderRadius: '4px',
+//     border: '1px solid #ddd'
+//   },
+//   usernameInput: {
+//     width: '100%',
+//     padding: '10px',
+//     margin: '10px 0',
+//     borderRadius: '4px',
+//     border: '1px solid #ddd'
+//   },
+//   button: {
+//     padding: '10px 20px',
+//     borderRadius: '4px',
+//     cursor: 'pointer',
+//     border: 'none',
+//     fontWeight: 'bold'
+//   },
+//   closeButton: {
+//     backgroundColor: '#f44336',
+//     color: 'white'
+//   },
+//   uploadButton: {
+//     backgroundColor: '#4CAF50',
+//     color: 'white'
+//   },
+//   disabledButton: {
+//     opacity: 0.6,
+//     cursor: 'not-allowed'
+//   }
+// };
+
+// // Upload Modal Component
+// const UploadModal = ({ toggleModal }) => {
+//   const [videoFile, setVideoFile] = useState(null);
+//   const [videoBase64, setVideoBase64] = useState('');
+//   const [caption, setCaption] = useState('');
+//   const [username, setUsername] = useState('');
+//   const [uploadProgress, setUploadProgress] = useState(0);
+//   const [isUploading, setIsUploading] = useState(false);
+//   const [error, setError] = useState('');
+//   const [success, setSuccess] = useState('');
+
+//   const handleFileChange = (e) => {
+//     const file = e.target.files[0];
+//     if (file && file.type.includes('video')) {
+//       setVideoFile(file);
+//       // Create base64 representation for preview
+//       const reader = new FileReader();
+//       reader.onload = (event) => {
+//         setVideoBase64(event.target.result);
+//       };
+//       reader.readAsDataURL(file);
+//       setError('');
+//     } else if (file) {
+//       setError('Please select a valid video file');
+//     }
+//   };
+
+//   const handleUpload = async () => {
+//     if (!videoFile) {
+//       setError('Please select a video to upload');
+//       return;
+//     }
+    
+//     if (!caption.trim()) {
+//       setError('Please enter a caption');
+//       return;
+//     }
+
+//     if (!username.trim()) {
+//       setError('Please enter a username');
+//       return;
+//     }
+
+//     setIsUploading(true);
+//     setError('');
+    
+//     try {
+//       // Create a unique identifier for this upload
+//       const timestamp = new Date().getTime();
+//       const randomId = Math.random().toString(36).substring(2, 8);
+//       const fileExtension = videoFile.name.split('.').pop();
+//       const fileName = `videos/${timestamp}-${randomId}.${fileExtension}`;
+      
+//       // Create storage reference
+//       const storageRef = ref(storage, fileName);
+      
+//       // Upload the video file
+//       const uploadTask = uploadBytesResumable(storageRef, videoFile);
+      
+//       // Listen for upload progress
+//       uploadTask.on('state_changed', 
+//         (snapshot) => {
+//           // Calculate and update progress
+//           const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+//           setUploadProgress(progress);
+//         },
+//         (error) => {
+//           // Handle upload errors
+//           setError('Upload failed: ' + error.message);
+//           setIsUploading(false);
+//         },
+//         async () => {
+//           // Handle successful upload
+//           const downloadURL = await getDownloadURL(uploadTask.snapshot.ref);
+          
+//           // Create metadata object to store in Firestore
+//           const videoData = {
+//             userName: username,
+//             caption: caption,
+//             videoUrl: downloadURL,
+//             fileName: fileName,
+//             fileType: videoFile.type,
+//             fileSize: videoFile.size,
+//             originalName: videoFile.name,
+//             timestamp: serverTimestamp(),
+//             likes: 0,
+//             views: 0,
+//             comments: []
+//           };
+          
+//           // Add the video info to Firestore database
+//           await addDoc(collection(db, "videos"), videoData);
+          
+//           // Show success message
+//           setSuccess('Video uploaded successfully!');
+          
+//           // Reset form after a short delay to show success message
+//           setTimeout(() => {
+//             setVideoFile(null);
+//             setVideoBase64('');
+//             setCaption('');
+//             setUsername('');
+//             setUploadProgress(0);
+//             setIsUploading(false);
+//             setSuccess('');
+//             toggleModal();
+//           }, 2000);
+//         }
+//       );
+//     } catch (error) {
+//       setError('Upload failed: ' + error.message);
+//       setIsUploading(false);
+//     }
+//   };
+
+//   // Stop propagation on modal content click to prevent closing when clicking inside
+//   const handleModalContentClick = (e) => {
+//     e.stopPropagation();
+//   };
+
+//   return (
+//     <div style={styles.modal}>
+//       <div style={styles.overlay} onClick={toggleModal}>
+//         <div style={styles.modalContent} onClick={handleModalContentClick}>
+//           <h2>UPLOAD</h2>
+          
+//           <input 
+//             type="file" 
+//             accept="video/*" 
+//             onChange={handleFileChange} 
+//             style={styles.fileInput}
+//           />
+          
+//           <input 
+//             type="text" 
+//             placeholder="Enter your username..." 
+//             value={username}
+//             onChange={(e) => setUsername(e.target.value)}
+//             style={styles.usernameInput}
+//           />
+          
+//           <input 
+//             type="text" 
+//             placeholder="Enter a caption..." 
+//             value={caption}
+//             onChange={(e) => setCaption(e.target.value)}
+//             style={styles.captionInput}
+//           />
+          
+//           {videoBase64 && (
+//             <div style={styles.videoPreview}>
+//               <video controls width="100%" height="auto">
+//                 <source src={videoBase64} type={videoFile?.type} />
+//                 Your browser does not support the video tag.
+//               </video>
+//             </div>
+//           )}
+          
+//           {isUploading && (
+//             <div style={styles.progressBar}>
+//               <div style={styles.progress(uploadProgress)}></div>
+//               <span style={styles.progressText}>{Math.round(uploadProgress)}%</span>
+//             </div>
+//           )}
+          
+//           {error && <p style={styles.errorMessage}>{error}</p>}
+//           {success && <p style={styles.successMessage}>{success}</p>}
+          
+//           <div style={styles.modalButtons}>
+//             <button 
+//               style={{
+//                 ...styles.button,
+//                 ...styles.closeButton,
+//                 ...(isUploading ? styles.disabledButton : {})
+//               }}
+//               onClick={toggleModal}
+//               disabled={isUploading}
+//             >
+//               CLOSE
+//             </button>
+            
+//             <button 
+//               style={{
+//                 ...styles.button,
+//                 ...styles.uploadButton,
+//                 ...(isUploading ? styles.disabledButton : {})
+//               }}
+//               onClick={handleUpload}
+//               disabled={isUploading}
+//             >
+//               {isUploading ? 'UPLOADING...' : 'UPLOAD'}
+//             </button>
+//           </div>
+//         </div>
+//       </div>
+//     </div>
+//   );
+// };
+
+// // Navbar Component
+// const Navbar = ({ setSidebar }) => {
+//   const navigate = useNavigate();
+//   const [modal, setModal] = useState(false);
+
+//   const toggleModal = () => {
+//     setModal((prev) => !prev);
+//   };
+
+//   return (
+//     <>
+//       <nav className='flex-div'>
+//         <div className='nav-left flex-div'>
+//           <img
+//             className='menu-icon'
+//             onClick={() => setSidebar((prev) => !prev)}
+//             src={Image1}
+//             alt="menu"
+//           />
+//           <Link to="/">
+//             <img className='logo' src={logo} alt="logo" />
+//           </Link>
+//         </div>
+
+//         <div className="nav-right flex-div">
+//           <button
+//             onClick={() =>
+//               (window.location.href = 'https://delightful-sunshine-112988.netlify.app/')
+//             }
+//             className='logout-button'
+//           >
+//             LOGOUT
+//           </button>
+//           <Link to="/Contact">
+//             <h6>CONTACT ME</h6>
+//           </Link>
+//           <img
+//             src={upload_icon}
+//             alt="upload"
+//             style={{ cursor: 'pointer' }}
+//             onClick={toggleModal}
+//           />
+//           <img onClick={() => navigate('/More')} src={more_icon} alt="more" />
+//           <img onClick={() => navigate('/Notifime')} src={notification_icon} alt="notifications" />
+//           <img
+//             onClick={() => navigate('/userinfo')}
+//             src={profile_icon}
+//             className='user-icon'
+//             alt="profile"
+//           />
+//         </div>
+//       </nav>
+
+//       {modal && <UploadModal toggleModal={toggleModal} />}
+//     </>
+//   );
+// };
+
+// export default Navbar;
+
+// import React, { useState } from 'react';
+// import { Link, useNavigate } from 'react-router-dom';
+// import './Navbar.css';
+// import Image1 from '../../assets/menu.png';
+// import logo from '../../assets/logo.png';
+// import upload_icon from '../../assets/upload.png';
+// import more_icon from '../../assets/more.png';
+// import notification_icon from '../../assets/notification.png';
+// import profile_icon from '../../assets/jack.png';
+
+// // Import Firebase services from your Firebase config file
+// import app from '../../firebase';
+// import { storage, db } from '../../firebase';
+// import { ref, uploadBytesResumable, getDownloadURL } from "firebase/storage";
+// import { collection, addDoc, serverTimestamp } from "firebase/firestore";
+
+// // Style objects for inline styling
+// const styles = {
+//   modal: {
+//     position: 'fixed',
+//     top: 0,
+//     left: 0,
+//     width: '100%',
+//     height: '100%',
+//     zIndex: 1000
+//   },
+//   overlay: {
+//     position: 'fixed',
+//     top: 0,
+//     left: 0,
+//     width: '100%',
+//     height: '100%',
+//     backgroundColor: 'rgba(0, 0, 0, 0.7)',
+//     display: 'flex',
+//     justifyContent: 'center',
+//     alignItems: 'center',
+//     zIndex: 1000
+//   },
+//   modalContent: {
+//     backgroundColor: '#fff',
+//     padding: '20px',
+//     borderRadius: '8px',
+//     maxWidth: '500px',
+//     width: '90%',
+//     maxHeight: '80vh',
+//     overflowY: 'auto',
+//     zIndex: 1001
+//   },
+//   videoPreview: {
+//     margin: '10px 0',
+//     border: '1px solid #ddd',
+//     borderRadius: '4px',
+//     overflow: 'hidden'
+//   },
+//   progressBar: {
+//     width: '100%',
+//     height: '20px',
+//     backgroundColor: '#e0e0e0',
+//     borderRadius: '4px',
+//     margin: '10px 0',
+//     position: 'relative'
+//   },
+//   progress: (percentage) => ({
+//     height: '100%',
+//     backgroundColor: '#4285f4',
+//     borderRadius: '4px',
+//     transition: 'width 0.3s ease',
+//     width: `${percentage}%`
+//   }),
+//   progressText: {
+//     position: 'absolute',
+//     top: '50%',
+//     left: '50%',
+//     transform: 'translate(-50%, -50%)',
+//     color: '#000',
+//     fontSize: '12px',
+//     fontWeight: 'bold'
+//   },
+//   errorMessage: {
+//     color: '#d32f2f',
+//     margin: '10px 0'
+//   },
+//   successMessage: {
+//     color: '#4CAF50',
+//     margin: '10px 0'
+//   },
+//   modalButtons: {
+//     display: 'flex',
+//     justifyContent: 'space-between',
+//     marginTop: '15px'
+//   },
+//   fileInput: {
+//     width: '100%',
+//     padding: '10px 0',
+//     marginBottom: '10px'
+//   },
+//   captionInput: {
+//     width: '100%',
+//     padding: '10px',
+//     margin: '10px 0',
+//     borderRadius: '4px',
+//     border: '1px solid #ddd'
+//   },
+//   usernameInput: {
+//     width: '100%',
+//     padding: '10px',
+//     margin: '10px 0',
+//     borderRadius: '4px',
+//     border: '1px solid #ddd'
+//   },
+//   button: {
+//     padding: '10px 20px',
+//     borderRadius: '4px',
+//     cursor: 'pointer',
+//     border: 'none',
+//     fontWeight: 'bold'
+//   },
+//   closeButton: {
+//     backgroundColor: '#f44336',
+//     color: 'white'
+//   },
+//   uploadButton: {
+//     backgroundColor: '#4CAF50',
+//     color: 'white'
+//   },
+//   disabledButton: {
+//     opacity: 0.6,
+//     cursor: 'not-allowed'
+//   }
+// };
+
+// // Upload Modal Component
+// const UploadModal = ({ toggleModal }) => {
+//   const [videoFile, setVideoFile] = useState(null);
+//   const [videoBase64, setVideoBase64] = useState('');
+//   const [caption, setCaption] = useState('');
+//   const [username, setUsername] = useState('');
+//   const [uploadProgress, setUploadProgress] = useState(0);
+//   const [isUploading, setIsUploading] = useState(false);
+//   const [error, setError] = useState('');
+//   const [success, setSuccess] = useState('');
+
+//   const handleFileChange = (e) => {
+//     const file = e.target.files[0];
+//     if (file && file.type.includes('video')) {
+//       setVideoFile(file);
+//       // Create base64 representation for preview
+//       const reader = new FileReader();
+//       reader.onload = (event) => {
+//         setVideoBase64(event.target.result);
+//       };
+//       reader.readAsDataURL(file);
+//       setError('');
+//     } else if (file) {
+//       setError('Please select a valid video file');
+//     }
+//   };
+
+//   const handleUpload = async () => {
+//     if (!videoFile) {
+//       setError('Please select a video to upload');
+//       return;
+//     }
+    
+//     if (!caption.trim()) {
+//       setError('Please enter a caption');
+//       return;
+//     }
+
+//     if (!username.trim()) {
+//       setError('Please enter a username');
+//       return;
+//     }
+
+//     setIsUploading(true);
+//     setError('');
+    
+//     try {
+//       // First save metadata to Firestore
+//       const videoDocRef = await addDoc(collection(db, "videos"), {
+//         userName: username,
+//         caption: caption,
+//         timestamp: serverTimestamp(),
+//         likes: 0,
+//         views: 0,
+//         comments: [],
+//         // We'll update this URL after the upload
+//         videoUrl: "",
+//         fileName: "",
+//         status: "uploading"
+//       });
+      
+//       // Get the document ID for the file path
+//       const docId = videoDocRef.id;
+//       const fileExtension = videoFile.name.split('.').pop();
+//       const fileName = `videos/${docId}.${fileExtension}`;
+      
+//       // Create storage reference
+//       const storageRef = ref(storage, fileName);
+      
+//       // Upload the video file
+//       const uploadTask = uploadBytesResumable(storageRef, videoFile);
+      
+//       // Listen for upload progress
+//       uploadTask.on(
+//         'state_changed', 
+//         (snapshot) => {
+//           // Calculate and update progress
+//           const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+//           setUploadProgress(progress);
+//         },
+//         (error) => {
+//           // Handle upload errors
+//           console.error("Upload error:", error);
+//           setError('Upload failed. Please try again later.');
+//           setIsUploading(false);
+//         },
+//         async () => {
+//           try {
+//             // Get download URL after successful upload
+//             const downloadURL = await getDownloadURL(storageRef);
+            
+//             // Update the Firestore document with the URL and complete status
+//             await videoDocRef.update({
+//               videoUrl: downloadURL,
+//               fileName: fileName,
+//               fileType: videoFile.type,
+//               fileSize: videoFile.size,
+//               originalName: videoFile.name,
+//               status: "complete"
+//             });
+            
+//             // Show success message
+//             setSuccess('Video uploaded successfully!');
+            
+//             // Reset form after a short delay to show success message
+//             setTimeout(() => {
+//               setVideoFile(null);
+//               setVideoBase64('');
+//               setCaption('');
+//               setUsername('');
+//               setUploadProgress(0);
+//               setIsUploading(false);
+//               setSuccess('');
+//               toggleModal();
+//             }, 2000);
+//           } catch (error) {
+//             console.error("Error getting download URL or updating document:", error);
+//             setError('Upload completed but finalizing failed. Please try again.');
+//             setIsUploading(false);
+//           }
+//         }
+//       );
+//     } catch (error) {
+//       console.error("Upload init error:", error);
+//       setError('Failed to start upload. Please try again later.');
+//       setIsUploading(false);
+//     }
+//   };
+
+//   // Stop propagation on modal content click to prevent closing when clicking inside
+//   const handleModalContentClick = (e) => {
+//     e.stopPropagation();
+//   };
+
+//   return (
+//     <div style={styles.modal}>
+//       <div style={styles.overlay} onClick={toggleModal}>
+//         <div style={styles.modalContent} onClick={handleModalContentClick}>
+//           <h2>UPLOAD</h2>
+          
+//           <input 
+//             type="file" 
+//             accept="video/*" 
+//             onChange={handleFileChange} 
+//             style={styles.fileInput}
+//           />
+          
+//           <input 
+//             type="text" 
+//             placeholder="Enter your username..." 
+//             value={username}
+//             onChange={(e) => setUsername(e.target.value)}
+//             style={styles.usernameInput}
+//           />
+          
+//           <input 
+//             type="text" 
+//             placeholder="Enter a caption..." 
+//             value={caption}
+//             onChange={(e) => setCaption(e.target.value)}
+//             style={styles.captionInput}
+//           />
+          
+//           {videoBase64 && (
+//             <div style={styles.videoPreview}>
+//               <video controls width="100%" height="auto">
+//                 <source src={videoBase64} type={videoFile?.type} />
+//                 Your browser does not support the video tag.
+//               </video>
+//             </div>
+//           )}
+          
+//           {isUploading && (
+//             <div style={styles.progressBar}>
+//               <div style={styles.progress(uploadProgress)}></div>
+//               <span style={styles.progressText}>{Math.round(uploadProgress)}%</span>
+//             </div>
+//           )}
+          
+//           {error && <p style={styles.errorMessage}>{error}</p>}
+//           {success && <p style={styles.successMessage}>{success}</p>}
+          
+//           <div style={styles.modalButtons}>
+//             <button 
+//               style={{
+//                 ...styles.button,
+//                 ...styles.closeButton,
+//                 ...(isUploading ? styles.disabledButton : {})
+//               }}
+//               onClick={toggleModal}
+//               disabled={isUploading}
+//             >
+//               CLOSE
+//             </button>
+            
+//             <button 
+//               style={{
+//                 ...styles.button,
+//                 ...styles.uploadButton,
+//                 ...(isUploading ? styles.disabledButton : {})
+//               }}
+//               onClick={handleUpload}
+//               disabled={isUploading}
+//             >
+//               {isUploading ? 'UPLOADING...' : 'UPLOAD'}
+//             </button>
+//           </div>
+//         </div>
+//       </div>
+//     </div>
+//   );
+// };
+
+// // Navbar Component
+// const Navbar = ({ setSidebar }) => {
+//   const navigate = useNavigate();
+//   const [modal, setModal] = useState(false);
+
+//   const toggleModal = () => {
+//     setModal((prev) => !prev);
+//   };
+
+//   return (
+//     <>
+//       <nav className='flex-div'>
+//         <div className='nav-left flex-div'>
+//           <img
+//             className='menu-icon'
+//             onClick={() => setSidebar((prev) => !prev)}
+//             src={Image1}
+//             alt="menu"
+//           />
+//           <Link to="/">
+//             <img className='logo' src={logo} alt="logo" />
+//           </Link>
+//         </div>
+
+//         <div className="nav-right flex-div">
+//           <button
+//             onClick={() =>
+//               (window.location.href = 'https://delightful-sunshine-112988.netlify.app/')
+//             }
+//             className='logout-button'
+//           >
+//             LOGOUT
+//           </button>
+//           <Link to="/Contact">
+//             <h6>CONTACT ME</h6>
+//           </Link>
+//           <img
+//             src={upload_icon}
+//             alt="upload"
+//             style={{ cursor: 'pointer' }}
+//             onClick={toggleModal}
+//           />
+//           <img onClick={() => navigate('/More')} src={more_icon} alt="more" />
+//           <img onClick={() => navigate('/Notifime')} src={notification_icon} alt="notifications" />
+//           <img
+//             onClick={() => navigate('/userinfo')}
+//             src={profile_icon}
+//             className='user-icon'
+//             alt="profile"
+//           />
+//         </div>
+//       </nav>
+
+//       {modal && <UploadModal toggleModal={toggleModal} />}
+//     </>
+//   );
+// };
+
+// export default Navbar;
+
+// import React, { useState } from 'react';
+// import { Link, useNavigate } from 'react-router-dom';
+// import './Navbar.css';
+// import Image1 from '../../assets/menu.png';
+// import logo from '../../assets/logo.png';
+// import upload_icon from '../../assets/upload.png';
+// import more_icon from '../../assets/more.png';
+// import notification_icon from '../../assets/notification.png';
+// import profile_icon from '../../assets/jack.png';
+
+// // Import Firebase services from your Firebase config file
+// import app from '../../firebase';
+// import { storage, db } from '../../firebase';
+// import { ref, uploadBytesResumable, getDownloadURL } from "firebase/storage";
+// import { collection, addDoc, updateDoc, doc, serverTimestamp } from "firebase/firestore";
+
+// // Style objects for inline styling
+// const styles = {
+//   modal: {
+//     position: 'fixed',
+//     top: 0,
+//     left: 0,
+//     width: '100%',
+//     height: '100%',
+//     zIndex: 1000
+//   },
+//   overlay: {
+//     position: 'fixed',
+//     top: 0,
+//     left: 0,
+//     width: '100%',
+//     height: '100%',
+//     backgroundColor: 'rgba(0, 0, 0, 0.7)',
+//     display: 'flex',
+//     justifyContent: 'center',
+//     alignItems: 'center',
+//     zIndex: 1000
+//   },
+//   modalContent: {
+//     backgroundColor: '#fff',
+//     padding: '20px',
+//     borderRadius: '8px',
+//     maxWidth: '500px',
+//     width: '90%',
+//     maxHeight: '80vh',
+//     overflowY: 'auto',
+//     zIndex: 1001
+//   },
+//   videoPreview: {
+//     margin: '10px 0',
+//     border: '1px solid #ddd',
+//     borderRadius: '4px',
+//     overflow: 'hidden'
+//   },
+//   progressBar: {
+//     width: '100%',
+//     height: '20px',
+//     backgroundColor: '#e0e0e0',
+//     borderRadius: '4px',
+//     margin: '10px 0',
+//     position: 'relative'
+//   },
+//   progress: (percentage) => ({
+//     height: '100%',
+//     backgroundColor: '#4285f4',
+//     borderRadius: '4px',
+//     transition: 'width 0.3s ease',
+//     width: `${percentage}%`
+//   }),
+//   progressText: {
+//     position: 'absolute',
+//     top: '50%',
+//     left: '50%',
+//     transform: 'translate(-50%, -50%)',
+//     color: '#000',
+//     fontSize: '12px',
+//     fontWeight: 'bold'
+//   },
+//   errorMessage: {
+//     color: '#d32f2f',
+//     margin: '10px 0'
+//   },
+//   successMessage: {
+//     color: '#4CAF50',
+//     margin: '10px 0'
+//   },
+//   modalButtons: {
+//     display: 'flex',
+//     justifyContent: 'space-between',
+//     marginTop: '15px'
+//   },
+//   fileInput: {
+//     width: '100%',
+//     padding: '10px 0',
+//     marginBottom: '10px'
+//   },
+//   captionInput: {
+//     width: '100%',
+//     padding: '10px',
+//     margin: '10px 0',
+//     borderRadius: '4px',
+//     border: '1px solid #ddd'
+//   },
+//   usernameInput: {
+//     width: '100%',
+//     padding: '10px',
+//     margin: '10px 0',
+//     borderRadius: '4px',
+//     border: '1px solid #ddd'
+//   },
+//   button: {
+//     padding: '10px 20px',
+//     borderRadius: '4px',
+//     cursor: 'pointer',
+//     border: 'none',
+//     fontWeight: 'bold'
+//   },
+//   closeButton: {
+//     backgroundColor: '#f44336',
+//     color: 'white'
+//   },
+//   uploadButton: {
+//     backgroundColor: '#4CAF50',
+//     color: 'white'
+//   },
+//   disabledButton: {
+//     opacity: 0.6,
+//     cursor: 'not-allowed'
+//   }
+// };
+
+// // Upload Modal Component
+// const UploadModal = ({ toggleModal }) => {
+//   const [videoFile, setVideoFile] = useState(null);
+//   const [videoBase64, setVideoBase64] = useState('');
+//   const [caption, setCaption] = useState('');
+//   const [username, setUsername] = useState('');
+//   const [uploadProgress, setUploadProgress] = useState(0);
+//   const [isUploading, setIsUploading] = useState(false);
+//   const [error, setError] = useState('');
+//   const [success, setSuccess] = useState('');
+
+//   const handleFileChange = (e) => {
+//     const file = e.target.files[0];
+//     if (file && file.type.includes('video')) {
+//       setVideoFile(file);
+//       // Create base64 representation for preview
+//       const reader = new FileReader();
+//       reader.onload = (event) => {
+//         setVideoBase64(event.target.result);
+//       };
+//       reader.readAsDataURL(file);
+//       setError('');
+//     } else if (file) {
+//       setError('Please select a valid video file');
+//     }
+//   };
+
+//   const handleUpload = async () => {
+//     if (!videoFile) {
+//       setError('Please select a video to upload');
+//       return;
+//     }
+    
+//     if (!caption.trim()) {
+//       setError('Please enter a caption');
+//       return;
+//     }
+
+//     if (!username.trim()) {
+//       setError('Please enter a username');
+//       return;
+//     }
+
+//     setIsUploading(true);
+//     setError('');
+    
+//     try {
+//       // First, upload the file to Storage
+//       const fileExtension = videoFile.name.split('.').pop();
+//       const uniqueId = Date.now().toString();
+//       const fileName = `videos/${uniqueId}.${fileExtension}`;
+      
+//       // Create storage reference
+//       const storageRef = ref(storage, fileName);
+      
+//       // Upload the video file
+//       const uploadTask = uploadBytesResumable(storageRef, videoFile);
+      
+//       // Listen for upload progress
+//       uploadTask.on(
+//         'state_changed', 
+//         (snapshot) => {
+//           // Calculate and update progress
+//           const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+//           setUploadProgress(progress);
+//         },
+//         (error) => {
+//           // Handle upload errors
+//           console.error("Upload error:", error);
+          
+//           // Check for permission errors
+//           if (error.code === 'storage/unauthorized') {
+//             setError('Permission denied: Update your Firebase Storage rules to allow uploads.');
+//           } else {
+//             setError('Upload failed: ' + error.message);
+//           }
+          
+//           setIsUploading(false);
+//         },
+//         async () => {
+//           try {
+//             // Get download URL after successful upload
+//             const downloadURL = await getDownloadURL(storageRef);
+            
+//             // Then save metadata to Firestore
+//             const videoDocRef = await addDoc(collection(db, "videos"), {
+//               userName: username,
+//               caption: caption,
+//               timestamp: serverTimestamp(),
+//               likes: 0,
+//               views: 0,
+//               comments: [],
+//               videoUrl: downloadURL,
+//               fileName: fileName,
+//               fileType: videoFile.type,
+//               fileSize: videoFile.size,
+//               originalName: videoFile.name,
+//               status: "complete"
+//             });
+            
+//             // Show success message
+//             setSuccess('Video uploaded successfully!');
+            
+//             // Reset form after a short delay to show success message
+//             setTimeout(() => {
+//               setVideoFile(null);
+//               setVideoBase64('');
+//               setCaption('');
+//               setUsername('');
+//               setUploadProgress(0);
+//               setIsUploading(false);
+//               setSuccess('');
+//               toggleModal();
+//             }, 2000);
+//           } catch (error) {
+//             console.error("Error getting download URL or updating document:", error);
+            
+//             // Check for Firestore permission errors
+//             if (error.code === 'permission-denied') {
+//               setError('Permission denied: Update your Firestore security rules to allow writes.');
+//             } else {
+//               setError('Upload completed but finalizing failed: ' + error.message);
+//             }
+            
+//             setIsUploading(false);
+//           }
+//         }
+//       );
+//     } catch (error) {
+//       console.error("Upload init error:", error);
+//       setError('Failed to start upload: ' + error.message);
+//       setIsUploading(false);
+//     }
+//   };
+
+//   // Stop propagation on modal content click to prevent closing when clicking inside
+//   const handleModalContentClick = (e) => {
+//     e.stopPropagation();
+//   };
+
+//   return (
+//     <div style={styles.modal}>
+//       <div style={styles.overlay} onClick={toggleModal}>
+//         <div style={styles.modalContent} onClick={handleModalContentClick}>
+//           <h2>UPLOAD</h2>
+          
+//           <input 
+//             type="file" 
+//             accept="video/*" 
+//             onChange={handleFileChange} 
+//             style={styles.fileInput}
+//           />
+          
+//           <input 
+//             type="text" 
+//             placeholder="Enter your username..." 
+//             value={username}
+//             onChange={(e) => setUsername(e.target.value)}
+//             style={styles.usernameInput}
+//           />
+          
+//           <input 
+//             type="text" 
+//             placeholder="Enter a caption..." 
+//             value={caption}
+//             onChange={(e) => setCaption(e.target.value)}
+//             style={styles.captionInput}
+//           />
+          
+//           {videoBase64 && (
+//             <div style={styles.videoPreview}>
+//               <video controls width="100%" height="auto">
+//                 <source src={videoBase64} type={videoFile?.type} />
+//                 Your browser does not support the video tag.
+//               </video>
+//             </div>
+//           )}
+          
+//           {isUploading && (
+//             <div style={styles.progressBar}>
+//               <div style={styles.progress(uploadProgress)}></div>
+//               <span style={styles.progressText}>{Math.round(uploadProgress)}%</span>
+//             </div>
+//           )}
+          
+//           {error && <p style={styles.errorMessage}>{error}</p>}
+//           {success && <p style={styles.successMessage}>{success}</p>}
+          
+//           <div style={styles.modalButtons}>
+//             <button 
+//               style={{
+//                 ...styles.button,
+//                 ...styles.closeButton,
+//                 ...(isUploading ? styles.disabledButton : {})
+//               }}
+//               onClick={toggleModal}
+//               disabled={isUploading}
+//             >
+//               CLOSE
+//             </button>
+            
+//             <button 
+//               style={{
+//                 ...styles.button,
+//                 ...styles.uploadButton,
+//                 ...(isUploading ? styles.disabledButton : {})
+//               }}
+//               onClick={handleUpload}
+//               disabled={isUploading}
+//             >
+//               {isUploading ? 'UPLOADING...' : 'UPLOAD'}
+//             </button>
+//           </div>
+//         </div>
+//       </div>
+//     </div>
+//   );
+// };
+
+// // Navbar Component
+// const Navbar = ({ setSidebar }) => {
+//   const navigate = useNavigate();
+//   const [modal, setModal] = useState(false);
+
+//   const toggleModal = () => {
+//     setModal((prev) => !prev);
+//   };
+
+//   return (
+//     <>
+//       <nav className='flex-div'>
+//         <div className='nav-left flex-div'>
+//           <img
+//             className='menu-icon'
+//             onClick={() => setSidebar((prev) => !prev)}
+//             src={Image1}
+//             alt="menu"
+//           />
+//           <Link to="/">
+//             <img className='logo' src={logo} alt="logo" />
+//           </Link>
+//         </div>
+
+//         <div className="nav-right flex-div">
+//           <button
+//             onClick={() =>
+//               (window.location.href = 'https://delightful-sunshine-112988.netlify.app/')
+//             }
+//             className='logout-button'
+//           >
+//             LOGOUT
+//           </button>
+//           <Link to="/Contact">
+//             <h6>CONTACT ME</h6>
+//           </Link>
+//           <img
+//             src={upload_icon}
+//             alt="upload"
+//             style={{ cursor: 'pointer' }}
+//             onClick={toggleModal}
+//           />
+//           <img onClick={() => navigate('/More')} src={more_icon} alt="more" />
+//           <img onClick={() => navigate('/Notifime')} src={notification_icon} alt="notifications" />
+//           <img
+//             onClick={() => navigate('/userinfo')}
+//             src={profile_icon}
+//             className='user-icon'
+//             alt="profile"
+//           />
+//         </div>
+//       </nav>
+
+//       {modal && <UploadModal toggleModal={toggleModal} />}
+//     </>
+//   );
+// };
+
+// export default Navbar;
+
 import React, { useState } from 'react';
-import { BrowserRouter as Router, Routes, Route, Link, useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import './Navbar.css';
 import Image1 from '../../assets/menu.png';
 import logo from '../../assets/logo.png';
@@ -873,13 +2861,11 @@ import more_icon from '../../assets/more.png';
 import notification_icon from '../../assets/notification.png';
 import profile_icon from '../../assets/jack.png';
 
-// Import Firebase app and auth from your Firebase config file
-import app from '../../firebase'; // Adjust path as needed
-import { auth } from '../../firebase'; // Adjust path as needed
-
-// Import Firebase components
-import { getStorage, ref, uploadBytesResumable, getDownloadURL } from "firebase/storage";
-import { getFirestore, collection, addDoc, serverTimestamp } from "firebase/firestore";
+// Import Firebase services from your Firebase config file
+import app from '../../firebase';
+import { storage, db } from '../../firebase';
+import { ref, uploadBytesResumable, getDownloadURL } from "firebase/storage";
+import { collection, addDoc, serverTimestamp } from "firebase/firestore";
 
 // Style objects for inline styling
 const styles = {
@@ -947,6 +2933,10 @@ const styles = {
     color: '#d32f2f',
     margin: '10px 0'
   },
+  successMessage: {
+    color: '#4CAF50',
+    margin: '10px 0'
+  },
   modalButtons: {
     display: 'flex',
     justifyContent: 'space-between',
@@ -958,6 +2948,13 @@ const styles = {
     marginBottom: '10px'
   },
   captionInput: {
+    width: '100%',
+    padding: '10px',
+    margin: '10px 0',
+    borderRadius: '4px',
+    border: '1px solid #ddd'
+  },
+  usernameInput: {
     width: '100%',
     padding: '10px',
     margin: '10px 0',
@@ -982,31 +2979,40 @@ const styles = {
   disabledButton: {
     opacity: 0.6,
     cursor: 'not-allowed'
+  },
+  corsWarning: {
+    backgroundColor: '#fff3cd',
+    color: '#856404',
+    padding: '10px',
+    borderRadius: '4px',
+    marginBottom: '10px',
+    fontSize: '14px'
   }
 };
-
-// Initialize Firebase services
-const storage = getStorage(app);
-const db = getFirestore(app);
 
 // Upload Modal Component
 const UploadModal = ({ toggleModal }) => {
   const [videoFile, setVideoFile] = useState(null);
   const [videoBase64, setVideoBase64] = useState('');
   const [caption, setCaption] = useState('');
+  const [username, setUsername] = useState('');
   const [uploadProgress, setUploadProgress] = useState(0);
   const [isUploading, setIsUploading] = useState(false);
   const [error, setError] = useState('');
+  const [success, setSuccess] = useState('');
+  const [showCorsWarning, setShowCorsWarning] = useState(window.location.hostname === 'localhost');
 
   const handleFileChange = (e) => {
     const file = e.target.files[0];
     if (file && file.type.includes('video')) {
       setVideoFile(file);
+      // Create base64 representation for preview
       const reader = new FileReader();
       reader.onload = (event) => {
         setVideoBase64(event.target.result);
       };
       reader.readAsDataURL(file);
+      setError('');
     } else if (file) {
       setError('Please select a valid video file');
     }
@@ -1023,9 +3029,8 @@ const UploadModal = ({ toggleModal }) => {
       return;
     }
 
-    // Check if user is logged in
-    if (!auth.currentUser) {
-      setError('You must be logged in to upload videos');
+    if (!username.trim()) {
+      setError('Please enter a username');
       return;
     }
 
@@ -1033,9 +3038,25 @@ const UploadModal = ({ toggleModal }) => {
     setError('');
     
     try {
-      // Create a unique filename using timestamp and original filename
-      const timestamp = new Date().getTime();
-      const fileName = `videos/${auth.currentUser.uid}/${timestamp}-${videoFile.name}`;
+      // First save metadata to Firestore to get a document ID
+      const videoData = {
+        userName: username,
+        caption: caption,
+        timestamp: serverTimestamp(),
+        likes: 0,
+        views: 0,
+        comments: [],
+        videoUrl: "",
+        fileName: "",
+        status: "uploading"
+      };
+      
+      const videoDocRef = await addDoc(collection(db, "videos"), videoData);
+      const docId = videoDocRef.id;
+      
+      // Create a unique filename with document ID
+      const fileExtension = videoFile.name.split('.').pop();
+      const fileName = `videos/${docId}.${fileExtension}`;
       
       // Create storage reference
       const storageRef = ref(storage, fileName);
@@ -1044,7 +3065,8 @@ const UploadModal = ({ toggleModal }) => {
       const uploadTask = uploadBytesResumable(storageRef, videoFile);
       
       // Listen for upload progress
-      uploadTask.on('state_changed', 
+      uploadTask.on(
+        'state_changed', 
         (snapshot) => {
           // Calculate and update progress
           const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
@@ -1052,36 +3074,70 @@ const UploadModal = ({ toggleModal }) => {
         },
         (error) => {
           // Handle upload errors
-          setError('Upload failed: ' + error.message);
+          console.error("Upload error:", error);
+          
+          // Handle CORS errors specifically
+          if (error.code === 'storage/unauthorized' && window.location.hostname === 'localhost') {
+            setError('CORS error: You need to configure Firebase Storage CORS settings for localhost development. See instructions in console.');
+            console.log('Firebase Storage CORS Configuration Instructions:');
+            console.log('1. Install Firebase CLI: npm install -g firebase-tools');
+            console.log('2. Log in to Firebase: firebase login');
+            console.log('3. Create a cors.json file with:');
+            console.log(`[
+  {
+    "origin": ["http://localhost:5173", "http://127.0.0.1:5173"],
+    "method": ["GET", "POST", "PUT", "DELETE", "HEAD"],
+    "maxAgeSeconds": 3600
+  }
+]`);
+            console.log('4. Run: firebase storage:cors update --project react-firebase-auth-emai-38c12 --config cors.json');
+          } else if (error.code === 'storage/unauthorized') {
+            setError('Permission denied: Update your Firebase Storage rules to allow uploads.');
+          } else {
+            setError('Upload failed: ' + error.message);
+          }
+          
           setIsUploading(false);
         },
         async () => {
-          // Handle successful upload
-          const downloadURL = await getDownloadURL(uploadTask.snapshot.ref);
-          
-          // Add the video info to Firestore database
-          await addDoc(collection(db, "videos"), {
-            userId: auth.currentUser.uid,
-            userName: auth.currentUser.displayName || 'Anonymous',
-            caption: caption,
-            videoUrl: downloadURL,
-            fileName: fileName,
-            timestamp: serverTimestamp(),
-            likes: 0,
-            comments: []
-          });
-          
-          // Reset form and close modal
-          setVideoFile(null);
-          setVideoBase64('');
-          setCaption('');
-          setUploadProgress(0);
-          setIsUploading(false);
-          toggleModal();
+          try {
+            // Get download URL after successful upload
+            const downloadURL = await getDownloadURL(storageRef);
+            
+            // Update the Firestore document with the URL
+            await videoDocRef.update({
+              videoUrl: downloadURL,
+              fileName: fileName,
+              fileType: videoFile.type,
+              fileSize: videoFile.size,
+              originalName: videoFile.name,
+              status: "complete"
+            });
+            
+            // Show success message
+            setSuccess('Video uploaded successfully!');
+            
+            // Reset form after a short delay to show success message
+            setTimeout(() => {
+              setVideoFile(null);
+              setVideoBase64('');
+              setCaption('');
+              setUsername('');
+              setUploadProgress(0);
+              setIsUploading(false);
+              setSuccess('');
+              toggleModal();
+            }, 2000);
+          } catch (error) {
+            console.error("Error getting download URL or updating document:", error);
+            setError('Upload completed but finalizing failed: ' + error.message);
+            setIsUploading(false);
+          }
         }
       );
     } catch (error) {
-      setError('Upload failed: ' + error.message);
+      console.error("Upload init error:", error);
+      setError('Failed to start upload: ' + error.message);
       setIsUploading(false);
     }
   };
@@ -1096,12 +3152,28 @@ const UploadModal = ({ toggleModal }) => {
       <div style={styles.overlay} onClick={toggleModal}>
         <div style={styles.modalContent} onClick={handleModalContentClick}>
           <h2>UPLOAD</h2>
+          
+          {showCorsWarning && (
+            <div style={styles.corsWarning}>
+              <strong>Developer Note:</strong> If you encounter CORS errors when uploading, you need to configure Firebase Storage CORS settings. See console for instructions.
+            </div>
+          )}
+          
           <input 
             type="file" 
             accept="video/*" 
             onChange={handleFileChange} 
             style={styles.fileInput}
           />
+          
+          <input 
+            type="text" 
+            placeholder="Enter your username..." 
+            value={username}
+            onChange={(e) => setUsername(e.target.value)}
+            style={styles.usernameInput}
+          />
+          
           <input 
             type="text" 
             placeholder="Enter a caption..." 
@@ -1127,6 +3199,7 @@ const UploadModal = ({ toggleModal }) => {
           )}
           
           {error && <p style={styles.errorMessage}>{error}</p>}
+          {success && <p style={styles.successMessage}>{success}</p>}
           
           <div style={styles.modalButtons}>
             <button 
@@ -1140,6 +3213,7 @@ const UploadModal = ({ toggleModal }) => {
             >
               CLOSE
             </button>
+            
             <button 
               style={{
                 ...styles.button,
