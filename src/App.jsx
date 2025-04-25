@@ -8,6 +8,7 @@ import More from './Components/Navbar/More'
 import Notifime from './Components/Navbar/Notifime'
 import UserInfo from './Components/Navbar/userinfo'
 import './Components/Navbar/Navbar.css'
+import Uploaded from './Components/Upload/Upload'
 
 const App = () => {
 
@@ -23,6 +24,7 @@ const App = () => {
         <Route path='/More' element={<More/>}/>
         <Route path='/Notifime' element={<Notifime/>}/>
         <Route path='/userinfo' element={<UserInfo/>}/>
+        <Route path='/upload' element={<Uploaded/>}/>
       </Routes>
     </div>
   )

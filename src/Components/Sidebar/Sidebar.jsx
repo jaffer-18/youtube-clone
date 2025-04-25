@@ -15,9 +15,13 @@ import Tom from '../../assets/tom.png'
 import Megan from '../../assets/megan.png'
 import Cameron from '../../assets/cameron.png'
 import upload_icon from '../../assets/upload.png'
+import { Navigate } from 'react-router-dom'
+import { useNavigate } from 'react-router-dom'
 
 
 const Sidebar = ({sidebar,category,setCategory}) => {
+    const navigate = useNavigate();
+
   return (
     <div className={`sidebar ${sidebar?"":"small-sidebar"}`}>
         <div className="shortcut-links">
@@ -49,8 +53,8 @@ const Sidebar = ({sidebar,category,setCategory}) => {
             <div className={`side-link ${category==25?"active":""}`} onClick={()=>setCategory(25)}>
                 <img src={News} alt=""/><p>News</p>
             </div>
-            <div className="side-link">
-                <img src={upload_icon} alt=""/><p>Uploaded videos</p>
+            <div className="side-link" onClick={() => {navigate("/upload")}}>
+                <img src={upload_icon} onClick={() => {navigate("/upload")}} alt=""/><p>Uploaded videos</p>
             </div>
             <hr/>
         </div>
