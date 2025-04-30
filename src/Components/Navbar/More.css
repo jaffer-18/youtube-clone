@@ -22,7 +22,7 @@
     height: 200px;
     object-fit: cover;
     border-radius: 100px;
-    border: 3px solid #f83b07;
+    border: 3px solid #060af7;
     transition: transform 0.3s ease, box-shadow 0.3s ease;
     animation: fadeInUp 1s ease forwards;
     opacity: 0; /* Start invisible for animation */

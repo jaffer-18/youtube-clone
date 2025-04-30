@@ -5,6 +5,7 @@
     background-color: #ffffff;
     box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
     border-radius: 12px;
+    animation: fadeIn 0.5s ease-in-out; /* Added fade-in animation */
 }
 
 .profile-image {
@@ -16,6 +17,7 @@
     border: 3px solid #ff0000;
     object-fit: cover;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    animation: zoomIn 0.5s ease-in-out; /* Added zoom-in animation */
 }
 
 .user-info-title {
@@ -26,6 +28,7 @@
     text-align: center;
     border-bottom: 2px solid #ff0000;
     padding-bottom: 10px;
+    animation: slideDown 0.5s ease-in-out; /* Added slide-down animation */
 }
 
 .info-section {
@@ -34,6 +37,7 @@
     background-color: #f8f9fa;
     border-radius: 8px;
     transition: all 0.3s ease;
+    animation: fadeInUp 0.5s ease-in-out; /* Added fade-in-up animation */
 }
 
 .info-section:hover {
@@ -65,14 +69,104 @@
     border-left: 2px solid #ff0000;
 }
 
+/* Keyframes for animations */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}
+
+@keyframes zoomIn {
+    from {
+        transform: scale(0.8);
+        opacity: 0;
+    }
+    to {
+        transform: scale(1);
+        opacity: 1;
+    }
+}
+
+@keyframes slideDown {
+    from {
+        transform: translateY(-20px);
+        opacity: 0;
+    }
+    to {
+        transform: translateY(0);
+        opacity: 1;
+    }
+}
+
+@keyframes fadeInUp {
+    from {
+        transform: translateY(20px);
+        opacity: 0;
+    }
+    to {
+        transform: translateY(0);
+        opacity: 1;
+    }
+}
+
+/* Responsive Design */
 @media (max-width: 768px) {
     .user-info-container {
         margin: 20px;
         padding: 20px;
+        animation: fadeIn 0.5s ease-in-out; /* Keep fade-in animation for smaller screens */
     }
     
     .profile-image {
         width: 80px;
         height: 80px;
+        animation: zoomIn 0.5s ease-in-out; /* Keep zoom-in animation for smaller screens */
+    }
+
+    .user-info-title {
+        font-size: 1.2rem;
+    }
+
+    .info-section {
+        padding: 10px;
+    }
+
+    .info-label {
+        font-size: 0.9rem;
+    }
+
+    .info-value {
+        font-size: 0.85rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .user-info-container {
+        margin: 10px;
+        padding: 15px;
+    }
+
+    .profile-image {
+        width: 60px;
+        height: 60px;
+    }
+
+    .user-info-title {
+        font-size: 1rem;
+    }
+
+    .info-section {
+        padding: 8px;
+    }
+
+    .info-label {
+        font-size: 0.8rem;
+    }
+
+    .info-value {
+        font-size: 0.75rem;
     }
 }

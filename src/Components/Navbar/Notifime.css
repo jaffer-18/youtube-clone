@@ -9,6 +9,7 @@
     height: auto;
     max-height: 80vh;
     overflow-y: auto;
+    animation: fadeIn 0.5s ease-in-out; /* Added fade-in animation */
 }
 
 .notification-header {
@@ -25,6 +26,7 @@
     padding: 10px;
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
     text-align: center;
+    animation: slideDown 0.5s ease-in-out; /* Added slide-down animation */
 }
 
 .notification-content {
@@ -36,7 +38,8 @@
     padding: 12px;
     background-color: #f8f9fa;
     border-radius: 8px;
-    transition: all 0.3s ease;
+    transition: all 0.3s ease, transform 0.3s ease; /* Smooth transition for hover effects */
+    animation: fadeInUp 0.5s ease-in-out; /* Added fade-in-up animation */
 }
 
 .notification-item:hover {
@@ -67,14 +70,48 @@
     font-style: italic;
 }
 
+/* Keyframes for animations */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}
+
+@keyframes slideDown {
+    from {
+        transform: translateY(-20px);
+        opacity: 0;
+    }
+    to {
+        transform: translateY(0);
+        opacity: 1;
+    }
+}
+
+@keyframes fadeInUp {
+    from {
+        transform: translateY(20px);
+        opacity: 0;
+    }
+    to {
+        transform: translateY(0);
+        opacity: 1;
+    }
+}
+
 @media (max-width: 768px) {
     .notifi-container {
         margin: 20px 0 20px 10px;
         padding: 15px;
         max-width: 300px;
+        animation: fadeIn 0.5s ease-in-out; /* Keep fade-in animation for smaller screens */
     }
     
     .notification-item {
         padding: 10px;
+        animation: fadeInUp 0.5s ease-in-out; /* Keep fade-in-up animation for smaller screens */
     }
 }
