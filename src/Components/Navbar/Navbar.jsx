@@ -179,7 +179,7 @@ const UploadModal = ({ toggleModal }) => {
       <div style={styles.overlay} onClick={toggleModal}>
         <div style={styles.modalContent} onClick={(e) => e.stopPropagation()}>
           <h2>UPLOAD</h2>
-          <div style={styles.warningMessage}><strong>Note:</strong> Videos are stored as base64. Large videos will be chunked.</div>
+          <div style={styles.warningMessage}><strong>Note:</strong> Videos are stored as base64.So the large videos will be chunked and error in playing.</div>
           <input type="file" accept="video/*" onChange={handleFileChange} style={styles.fileInput} />
           <input type="text" placeholder="Username" value={username} onChange={(e) => setUsername(e.target.value)} style={styles.usernameInput} />
           <input type="text" placeholder="Channel Name" value={channelName} onChange={(e) => setChannelName(e.target.value)} style={styles.channelInput} />
