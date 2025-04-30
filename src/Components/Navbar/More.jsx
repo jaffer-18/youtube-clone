@@ -8,7 +8,7 @@ const More = () => {
         <h1>Meet the developers</h1>
         <img src={Jaffer} className="jaffer-image" />
         <h2>Mohammed Jaffer Sharieff</h2>
-        <p>Front end developers and data intergration</p>
+        <p>Front end developer and data intergration</p>
     </div>
   );
 }
