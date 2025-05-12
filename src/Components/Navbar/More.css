@@ -1,67 +1,11 @@
-.more-container {
-    text-align: center;
-    padding: 40px 20px;
-    background-color: #f9f9f9;
-    border-radius: 12px;
-    max-width: 600px;
-    margin: 40px auto;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-    animation: fadeIn 1s ease-in-out forwards;
-  }
-  
-  .more-container h1 {
-    font-size: 2rem;
-    margin-bottom: 20px;
-    color: #333;
-  }
-  
-  .jaffer-image {
-    display: block;
-    margin: 0 auto 15px; /* Center horizontally */
-    width: 200px;
-    height: 200px;
-    object-fit: cover;
-    border-radius: 100px;
-    border: 3px solid #060af7;
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
-    animation: fadeInUp 1s ease forwards;
-    opacity: 0; /* Start invisible for animation */
-  }
-  
-  .jaffer-image:hover {
-    transform: scale(1.05);
-    box-shadow: 0 10px 20px rgba(0, 123, 255, 0.2);
-  }
-  
-  .more-container h2 {
-    font-size: 1.5rem;
-    margin-bottom: 10px;
-    color: #222;
-  }
-  
-  .more-container p {
-    font-size: 1rem;
-    color: #555;
-  }
-  
-  /* Animations */
-  @keyframes fadeInUp {
-    from {
-      opacity: 0;
-      transform: translateY(30px);
-    }
-    to {
-      opacity: 1;
-      transform: translateY(0);
-    }
-  }
-  
-  @keyframes fadeIn {
-    from {
-      opacity: 0;
-    }
-    to {
-      opacity: 1;
-    }
-  }
-  
+.container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh; /* Full viewport height */
+}
+
+.more-heading {
+  font-weight: bold;
+  font-size: 2rem; /* Optional: makes it more prominent */
+}
